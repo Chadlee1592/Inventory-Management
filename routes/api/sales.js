@@ -41,14 +41,16 @@ router.post('/', auth, async (req, res) => {
 })
 
 // @route  GET api/sales
-// @desc   GET all sale listing
+// @desc   GET Current users sale
 // @access Private
 
 router.get('/', auth, async (req, res) => {
     try {
-        const sales = await Sale.find().sort({
+        const sales = await Sale.find({
+            user: req.user.id
+        }).sort({
             date: -1
-        })
+        }).populate('user', ['name'])
         res.json(sales)
     } catch (err) {
         console.log(err.message);
@@ -63,10 +65,11 @@ router.get('/', auth, async (req, res) => {
 router.get('/open', auth, async (req, res) => {
     try {
         const sales = await Sale.find({
-            status: false
+            status: false,
+            user: req.user.id
         }).sort({
             date: -1
-        })
+        }).populate('user', ['name'])
         res.json(sales)
     } catch (err) {
         console.log(err.message);
@@ -81,10 +84,11 @@ router.get('/open', auth, async (req, res) => {
 router.get('/closed', auth, async (req, res) => {
     try {
         const sales = await Sale.find({
-            status: true
+            status: true,
+            user: req.user.id
         }).sort({
             date: -1
-        })
+        }).populate('user', ['name'])
         res.json(sales)
     } catch (err) {
         console.log(err.message);

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner'
@@ -6,37 +6,58 @@ import { getCurrentSales } from '../../actions/sales';
 import MaterialTable from 'material-table';
 
 const Dashboard = ({ getCurrentSales, auth: { user }, sale: { sale, loading } }) => {
-  useEffect(() => {
-    getCurrentSales();
-    setState(prevState => {
-      const data = [...prevState.data];
-      const newData = {
-        name: 'chad',
-        status: 1
-      }
-      data.push(newData);
-      return { ...prevState, data };
-    })
-  }, []);
-
-  console.log(sale)
-
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     columns: [
       {
         title: 'Status',
         field: 'status',
         lookup: { 0: 'Open', 1: 'Closed' },
       },
+      { title: 'Purchase Date', field: 'purchase_date', filtering: false, type: 'date' },
       { title: 'Name', field: 'name', filtering: false },
-      { title: 'Purchase Date', field: 'surname', filtering: false },
-      { title: 'Closed Date', field: 'date', filtering: false },
-      { title: 'id', field: 'db_id', hidden: true }
+      { title: 'Cost', field: 'cost', filtering: false, type: 'currency' },
+      { title: 'Revenue', field: 'revenue', filtering: false, type: 'currency' },
+      { title: 'Closed Date', field: 'closed_date', filtering: false, type: 'date' },
+      { title: 'id', field: 'id', hidden: true }
     ],
     data: [
       // { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
     ],
   });
+
+  useEffect(() => {
+    getCurrentSales();
+
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      setState(prevState => {
+        const data = [...prevState.data];
+        for (let i = 0; i < sale.length; i++) {
+          if (sale[i].status === true) {
+            const newData = {
+              id: sale[i]._id,
+              name: sale[i].name,
+              cost: sale[i].cost,
+              status: 0
+            }
+            data.push(newData);
+          } else {
+            const newData = {
+              id: sale[i]._id,
+              name: sale[i].name,
+              cost: sale[i].cost,
+              status: 1
+            }
+            data.push(newData);
+          }
+        }
+
+        return { ...prevState, data };
+      })
+    }
+  }, [sale])
 
   return loading && sale === null ? <Spinner /> : <Fragment>
     <h1 className="large text-primary">Dashboard</h1>
@@ -88,7 +109,9 @@ const Dashboard = ({ getCurrentSales, auth: { user }, sale: { sale, loading } })
       }}
       options={{
         filtering: true,
-        exportButton: true
+        exportButton: true,
+        cellStyle: { textAlign: "left" },
+        pageSize: 10
       }}
     />
   </Fragment>;

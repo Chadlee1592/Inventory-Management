@@ -1,11 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { Link, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { createSales } from '../../actions/sales'
 import Spinner from '../layout/Spinner'
 import { getCurrentSales } from '../../actions/sales';
 import MaterialTable from 'material-table';
 
-const Dashboard = ({ getCurrentSales, auth: { user }, sale: { sale, loading } }) => {
+const Dashboard = ({ getCurrentSales, createSales, history, auth: { user }, sale: { sale, loading } }) => {
   const [state, setState] = useState({
     columns: [
       {
@@ -75,7 +77,7 @@ const Dashboard = ({ getCurrentSales, auth: { user }, sale: { sale, loading } })
               resolve();
               setState(prevState => {
                 const data = [...prevState.data];
-                // Save to database here
+                createSales(newData, history)
                 data.push(newData);
                 return { ...prevState, data };
               });
@@ -120,7 +122,8 @@ const Dashboard = ({ getCurrentSales, auth: { user }, sale: { sale, loading } })
 Dashboard.propTypes = {
   getCurrentSales: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  sale: PropTypes.object.isRequired
+  sale: PropTypes.object.isRequired,
+  createSales: PropTypes.func.isRequired,
 };
 
 const mapStateToProp = state => ({
@@ -128,4 +131,4 @@ const mapStateToProp = state => ({
   sale: state.sale
 });
 
-export default connect(mapStateToProp, { getCurrentSales })(Dashboard);
+export default connect(mapStateToProp, { getCurrentSales, createSales })(withRouter(Dashboard));

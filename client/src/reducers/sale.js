@@ -1,4 +1,4 @@
-import { GET_SALES, SALES_ERROR, CLEAR_SALES } from '../actions/types';
+import { GET_SALES, SALES_ERROR, CLEAR_SALES, UPDATE_SALES } from '../actions/types';
 
 const initialState = {
   sale: null,
@@ -11,6 +11,7 @@ export default function (state = initialState, action) {
 
   switch (type) {
     case GET_SALES:
+    case UPDATE_SALES:
       return {
         ...state,
         sale: payload,

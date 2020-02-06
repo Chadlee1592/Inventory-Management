@@ -10,3 +10,4 @@ export const LOGOUT = 'LOGOUT';
 export const GET_SALES = 'GET_SALES';
 export const CLEAR_SALES = 'CLEAR_SALES';
 export const SALES_ERROR = 'SALES_ERROR';
+export const UPDATE_SALES = 'UPDATE_SALES';

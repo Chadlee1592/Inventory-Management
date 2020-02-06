@@ -2,7 +2,9 @@ import axios from 'axios';
 import { setAlert } from './alert';
 import moment from 'moment';
 
-import { GET_SALES, SALES_ERROR } from './types';
+import { GET_SALES, SALES_ERROR, UPDATE_SALES } from './types';
+import sale from '../reducers/sale';
+
 
 export const getCurrentSales = () => async dispatch => {
   try {
@@ -31,56 +33,101 @@ export const createSales = (
         'Content-Type': 'application/json'
       }
     };
+    if (!edit) {
+      // if status is true then lookup is 0
+      if (formData.status === 0) {
+        const newData = {
+          purchaseDate: moment(formData.purchase_date).format('MM DD YYYY'),
+          oppName: formData.name,
+          cost: formData.cost,
+          revenue: formData.revenue,
+          soldDate: moment(formData.closed_date).format('MM DD YYYY'),
+          status: true,
+          edit: false
+        };
 
-    console.log(
-      moment(formData.purchase_date).format('MM DD YYYY'),
-      'formData'
-    );
+        const res = await axios.post('/api/sales', newData, config);
 
-    // if status is true then lookup is 0
-    if (formData.status === 0 || '0') {
-      const newData = {
-        purchaseDate: moment(formData.purchase_date).format('MM DD YYYY'),
-        oppName: formData.name,
-        cost: formData.cost,
-        revenue: formData.revenue,
-        soldDate: moment(formData.closed_date).format('MM DD YYYY'),
-        status: true
-      };
+        dispatch({
+          type: GET_SALES,
+          payload: res.data
+        });
 
-      const res = await axios.post('/api/sales', newData, config);
+        dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
 
-      dispatch({
-        type: GET_SALES,
-        payload: res.data
-      });
 
-      dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created'));
-
-      if (!edit) {
         history.push('/dashboard');
+      } else {
+        const newData = {
+          purchaseDate: moment(formData.purchase_date).format('MM DD YYYY'),
+          oppName: formData.name,
+          cost: formData.cost,
+          revenue: formData.revenue,
+          soldDate: moment(formData.closed_date).format('MM DD YYYY'),
+          status: false,
+          edit: false
+        };
+
+        const res = await axios.post('/api/sales', newData, config);
+
+        dispatch({
+          type: GET_SALES,
+          payload: res.data
+        });
+
+        dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
+
+        history.push('/dashboard');
+
       }
+
     } else {
-      const newData = {
-        purchaseDate: moment(formData.purchase_date).format('MM DD YYYY'),
-        oppName: formData.name,
-        cost: formData.cost,
-        revenue: formData.revenue,
-        soldDate: moment(formData.closed_date).format('MM DD YYYY'),
-        status: false
-      };
+      if (parseInt(formData.status) === 0) {
+        const newData = {
+          id: formData.id,
+          purchaseDate: moment(formData.purchase_date).format('MM DD YYYY'),
+          oppName: formData.name,
+          cost: formData.cost,
+          revenue: formData.revenue,
+          soldDate: moment(formData.closed_date).format('MM DD YYYY'),
+          status: true,
+          edit: true
+        };
 
-      const res = await axios.post('/api/sales', newData, config);
+        const res = await axios.post('/api/sales', newData, config);
 
-      dispatch({
-        type: GET_SALES,
-        payload: res.data
-      });
+        dispatch({
+          type: GET_SALES,
+          payload: res.data
+        });
 
-      dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created'));
+        dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
 
-      if (!edit) {
+
         history.push('/dashboard');
+      } else {
+        const newData = {
+          id: formData.id,
+          purchaseDate: moment(formData.purchase_date).format('MM DD YYYY'),
+          oppName: formData.name,
+          cost: formData.cost,
+          revenue: formData.revenue,
+          soldDate: moment(formData.closed_date).format('MM DD YYYY'),
+          status: false,
+          edit: true
+        };
+
+        const res = await axios.post('/api/sales', newData, config);
+
+        dispatch({
+          type: GET_SALES,
+          payload: res.data
+        });
+
+        dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
+
+        history.push('/dashboard');
+
       }
     }
   } catch (err) {
@@ -95,3 +142,21 @@ export const createSales = (
     });
   }
 };
+
+export const deleteSale = id => async dispatch => {
+  try {
+    const res = await axios.delete(`/api/sales/${id}`)
+
+    dispatch({
+      type: UPDATE_SALES,
+      payload: res.data
+    })
+
+    dispatch(setAlert('Sale Removed', 'success'))
+  } catch (err) {
+    dispatch({
+      type: SALES_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    })
+  }
+}

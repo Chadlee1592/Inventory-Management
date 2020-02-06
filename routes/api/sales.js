@@ -11,24 +11,94 @@ const User = require('../../models/User');
 // @access Private
 router.post('/', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    if (!req.body.edit) {
+      const user = await User.findById(req.user.id).select('-password');
 
-    const newSale = new Sale({
-      purchaseDate: req.body.purchaseDate,
-      name: user.name,
-      user: req.user.id,
-      oppName: req.body.oppName,
-      cost: req.body.cost,
-      price: req.body.price,
-      margin: req.body.margin,
-      marginPercent: req.body.marginPercent,
-      status: req.body.status,
-      soldDate: req.body.soldDate
-    });
+      const newSale = new Sale({
+        purchaseDate: req.body.purchaseDate,
+        name: user.name,
+        user: req.user.id,
+        oppName: req.body.oppName,
+        cost: req.body.cost,
+        price: req.body.price,
+        margin: req.body.margin,
+        marginPercent: req.body.marginPercent,
+        status: req.body.status,
+        soldDate: req.body.soldDate,
+        price: req.body.revenue
+      });
 
-    const sale = await newSale.save();
+      const sale = await newSale.save();
 
-    res.json(sale);
+      res.json(sale);
+    } else {
+      if (req.body.purchaseDate === 'Invalid date' && req.body.soldDate !== 'Invalid date') {
+        const update = {
+          purchaseDate: null,
+          oppName: req.body.oppName,
+          cost: req.body.cost,
+          margin: req.body.margin,
+          marginPercent: req.body.marginPercent,
+          status: req.body.status,
+          soldDate: req.body.soldDate,
+          price: req.body.revenue
+        }
+        const sale = await Sale.findOneAndUpdate(
+          { _id: req.body.id },
+          update
+        )
+        res.json(sale)
+      } else if (req.body.soldDate === 'Invalid date' && req.body.purchaseDate !== 'Invalid date') {
+        const update = {
+          purchaseDate: req.body.purchaseDate,
+          oppName: req.body.oppName,
+          cost: req.body.cost,
+          margin: req.body.margin,
+          marginPercent: req.body.marginPercent,
+          status: req.body.status,
+          soldDate: null,
+          price: req.body.revenue
+        }
+        const sale = await Sale.findOneAndUpdate(
+          { _id: req.body.id },
+          update
+        )
+        res.json(sale)
+      } else if (req.body.purchaseDate === 'Invalid date' && req.body.soldDate === 'Invalid date') {
+        const update = {
+          purchaseDate: null,
+          oppName: req.body.oppName,
+          cost: req.body.cost,
+          margin: req.body.margin,
+          marginPercent: req.body.marginPercent,
+          status: req.body.status,
+          soldDate: null,
+          price: req.body.revenue
+        }
+        const sale = await Sale.findOneAndUpdate(
+          { _id: req.body.id },
+          update
+        )
+        res.json(sale)
+      } else {
+        const update = {
+          purchaseDate: req.body.purchaseDate,
+          oppName: req.body.oppName,
+          cost: req.body.cost,
+          margin: req.body.margin,
+          marginPercent: req.body.marginPercent,
+          status: req.body.status,
+          soldDate: req.body.soldDate,
+          price: req.body.revenue
+        }
+        const sale = await Sale.findOneAndUpdate(
+          { _id: req.body.id },
+          update
+        )
+        res.json(sale)
+
+      }
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -145,7 +215,7 @@ router.delete('/:id', auth, async (req, res) => {
     await sale.remove();
 
     res.json({
-      msg: 'Post removed'
+      msg: 'Sale Removed'
     });
   } catch (err) {
     console.log(err.message);

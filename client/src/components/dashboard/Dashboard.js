@@ -8,6 +8,8 @@ import {
   deleteSale,
   updateSale
 } from '../../actions/sales';
+import Papers from './Papers';
+
 import Spinner from '../layout/Spinner';
 import MaterialTable from 'material-table';
 
@@ -101,6 +103,7 @@ const Dashboard = ({
       <p className='lead'>
         <i className='fas fa-user'></i> Welcome {user && user.name}
       </p>
+      <Papers />
       <MaterialTable
         title='Inventory'
         columns={state.columns}
@@ -111,10 +114,37 @@ const Dashboard = ({
               setTimeout(() => {
                 resolve();
                 setState(prevState => {
-                  const data = [...prevState.data];
-                  createSales(newData, history);
-                  data.push(newData);
-                  return { ...prevState, data };
+                  if (
+                    (parseInt(newData.status) === 1 &&
+                      !newData.purchase_date) ||
+                    (parseInt(newData.status) === 1 && !newData.revenue) ||
+                    (parseInt(newData.status) === 1 && !newData.closed_date) ||
+                    (parseInt(newData.status) === 1 && !newData.cost) ||
+                    (parseInt(newData.status) === 1 && !newData.name)
+                  ) {
+                    updateSale(
+                      'Please fill all fields when status is closed',
+                      'danger'
+                    );
+                    const data = [...prevState.data];
+                    return { ...prevState, data };
+                  } else if (
+                    (parseInt(newData.status) === 0 && !newData.name) ||
+                    !newData.status ||
+                    (parseInt(newData.status) === 0 && !newData.cost)
+                  ) {
+                    updateSale(
+                      'Please fill Status, Name and Cost when creating and sale',
+                      'danger'
+                    );
+                    const data = [...prevState.data];
+                    return { ...prevState, data };
+                  } else {
+                    const data = [...prevState.data];
+                    createSales(newData, history);
+                    data.push(newData);
+                    return { ...prevState, data };
+                  }
                 });
               }, 600);
             }),
@@ -123,12 +153,16 @@ const Dashboard = ({
               setTimeout(() => {
                 resolve();
                 if (oldData) {
+                  console.log(newData);
                   if (
-                    (newData.status === 1 && !newData.closed_date) ||
-                    !newData.revenue
+                    (newData.status == 1 && !newData.closed_date) ||
+                    (newData.status == 1 && !newData.revenue) ||
+                    (newData.status == 1 && !newData.cost) ||
+                    (newData.status == 1 && !newData.purchase_date) ||
+                    (newData.status == 1 && !newData.name)
                   ) {
                     updateSale(
-                      'Please fill out Revenue and Closed Date when status is closed',
+                      'Please fill all fields when status is closed',
                       'danger'
                     );
                   } else {

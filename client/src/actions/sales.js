@@ -3,7 +3,6 @@ import { setAlert } from './alert';
 import moment from 'moment';
 
 import { GET_SALES, SALES_ERROR, UPDATE_SALES } from './types';
-import sale from '../reducers/sale';
 
 export const getCurrentSales = () => async dispatch => {
   try {

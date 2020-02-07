@@ -5,7 +5,6 @@ import moment from 'moment';
 import { GET_SALES, SALES_ERROR, UPDATE_SALES } from './types';
 import sale from '../reducers/sale';
 
-
 export const getCurrentSales = () => async dispatch => {
   try {
     const res = await axios.get('/api/sales');
@@ -55,7 +54,6 @@ export const createSales = (
 
         dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
 
-
         history.push('/dashboard');
       } else {
         const newData = {
@@ -78,9 +76,7 @@ export const createSales = (
         dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
 
         history.push('/dashboard');
-
       }
-
     } else {
       if (parseInt(formData.status) === 0) {
         const newData = {
@@ -102,7 +98,6 @@ export const createSales = (
         });
 
         dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
-
 
         history.push('/dashboard');
       } else {
@@ -127,7 +122,6 @@ export const createSales = (
         dispatch(setAlert(edit ? 'Sale Updated' : 'Sale Created', 'success'));
 
         history.push('/dashboard');
-
       }
     }
   } catch (err) {
@@ -145,18 +139,33 @@ export const createSales = (
 
 export const deleteSale = id => async dispatch => {
   try {
-    const res = await axios.delete(`/api/sales/${id}`)
+    const res = await axios.delete(`/api/sales/${id}`);
 
     dispatch({
       type: UPDATE_SALES,
       payload: res.data
-    })
+    });
 
-    dispatch(setAlert('Sale Removed', 'success'))
+    dispatch(setAlert('Sale Removed', 'success'));
   } catch (err) {
     dispatch({
       type: SALES_ERROR,
       payload: { msg: err.response.statusText, status: err.response.status }
-    })
+    });
   }
-}
+};
+
+export const updateSale = (
+  msg,
+  alertType,
+  timeout = 8000
+) => async dispatch => {
+  try {
+    dispatch(setAlert(msg, alertType, timeout));
+  } catch (err) {
+    dispatch({
+      type: SALES_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};

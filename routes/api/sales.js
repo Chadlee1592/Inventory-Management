@@ -11,7 +11,7 @@ const User = require('../../models/User');
 // @access Private
 router.post('/', auth, async (req, res) => {
   try {
-    const margin = parseInt(req.body.revenue) - parseInt(req.body.cost);
+    const margin = req.body.margin;
 
     if (!req.body.edit) {
       const user = await User.findById(req.user.id).select('-password');
@@ -82,8 +82,6 @@ router.post('/', auth, async (req, res) => {
         const sale = await Sale.findOneAndUpdate({ _id: req.body.id }, update);
         res.json(sale);
       } else {
-        console.log(margin);
-
         const update = {
           purchaseDate: req.body.purchaseDate,
           oppName: req.body.oppName,

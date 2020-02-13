@@ -1,9 +1,10 @@
-import { GET_SALES, SALES_ERROR, CLEAR_SALES, UPDATE_SALES } from '../actions/types';
+import { GET_SALES, SALES_ERROR, CLEAR_SALES, UPDATE_SALES, GET_INFO } from '../actions/types';
 
 const initialState = {
   sale: null,
   loading: true,
-  error: {}
+  error: {},
+  info: null
 };
 
 export default function (state = initialState, action) {
@@ -28,6 +29,12 @@ export default function (state = initialState, action) {
         ...state,
         sale: null,
         loading: false
+      };
+    case GET_INFO:
+      return {
+        ...state,
+        loading: false,
+        info: payload
       }
     default:
       return state;

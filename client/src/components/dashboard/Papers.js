@@ -3,11 +3,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import moment from 'moment';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getCurrentSales } from '../../actions/sales';
+import { getCurrentSalesInfo } from '../../actions/sales';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,68 +21,38 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Papers = ({
-  getCurrentSales,
+  getCurrentSalesInfo,
   auth: { user },
-  sale: { sale, loading }
+  sale: { sale, loading, info }
 }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     checkedB: false,
+  });
+  const [data, setData] = React.useState({
     overallProfit: '',
     overallCost: '',
     monthlyProfit: ''
-  });
+  })
 
   const handleChange = name => event => {
     setState({ ...state, [name]: event.target.checked });
   };
 
   useEffect(() => {
-    const overallProfit = () => {
-      if (!loading && sale) {
-        for (let i = 0; i < sale.length; i++) {
-          if (!sale[i].status) {
-            let totalMargin = +sale[i].margin;
-            return totalMargin;
-          }
-        }
-      }
-    };
-    const overallCost = () => {
-      if (!loading && sale) {
-        for (let i = 0; i < sale.length; i++) {
-          let totalCost = +sale[i].cost;
-          return totalCost;
-        }
-      }
-    };
+    getCurrentSalesInfo();
+  }, []);
 
-    const monthProfit = () => {
-      if (!loading && sale) {
-        const today = new Date();
-        const currentMonth = today.getMonth();
-        for (let i = 0; i < sale.length; i++) {
-          const closedMonth = moment(sale[i].soldDate);
-          if (!sale[i].status && currentMonth === closedMonth.month()) {
-            let totalMargin = +sale[i].margin;
-            return totalMargin;
-          }
-        }
-      }
-    };
-    if (!loading && sale) {
-      const totalProfit = overallProfit();
-      const totalCost = overallCost();
-      const monthlyProfit = monthProfit();
-      setState({
-        ...state,
-        monthlyProfit: monthlyProfit,
-        overallCost: totalCost,
-        overallProfit: totalProfit
-      });
+  useEffect(() => {
+    if (info !== null) {
+      setData({
+        overallProfit: info.totalProfit,
+        overallCost: info.totalInventoryCost,
+        monthlyProfit: info.currentMonthProfit
+      })
     }
-  }, [sale]);
-  console.log(state);
+  }, [info])
+
   return (
     <Fragment>
       <div className={classes.root}>
@@ -92,15 +61,15 @@ const Papers = ({
             <Paper elevation={3}>
               {' '}
               <div>Overall Profit</div>
-              <div>{state.overallProfit}</div>
+              <div>{data.overallProfit}</div>
             </Paper>
             <Paper elevation={3}>
               <div>Overall Cost</div>
-              <div>{state.overallCost}</div>
+              <div>{data.overallCost}</div>
             </Paper>
             <Paper elevation={3}>
               <div>Monthly Profit</div>
-              <div>{state.monthlyProfit}</div>
+              <div>{data.monthlyProfit}</div>
             </Paper>
           </Fragment>
         )}
@@ -122,7 +91,7 @@ const Papers = ({
 };
 
 Papers.propTypes = {
-  getCurrentSales: PropTypes.func.isRequired,
+  getCurrentSalesInfo: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   sale: PropTypes.object.isRequired
 };
@@ -133,5 +102,5 @@ const mapStateToProp = state => ({
 });
 
 export default connect(mapStateToProp, {
-  getCurrentSales
+  getCurrentSalesInfo
 })(Papers);

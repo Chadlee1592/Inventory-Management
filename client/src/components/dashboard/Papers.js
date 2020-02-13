@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import moment from 'moment';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -30,8 +31,7 @@ const Papers = ({
     checkedB: false,
     overallProfit: '',
     overallCost: '',
-    monthlyProfit: '',
-    monthlyCost: ''
+    monthlyProfit: ''
   });
 
   const handleChange = name => event => {
@@ -57,14 +57,33 @@ const Papers = ({
         }
       }
     };
-    const totalMargin = overallProfit();
-    const totalCost = overallCost();
-    console.log(totalMargin);
-    console.log(totalCost);
 
-    const 
+    const monthProfit = () => {
+      if (!loading && sale) {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        for (let i = 0; i < sale.length; i++) {
+          const closedMonth = moment(sale[i].soldDate);
+          if (!sale[i].status && currentMonth === closedMonth.month()) {
+            let totalMargin = +sale[i].margin;
+            return totalMargin;
+          }
+        }
+      }
+    };
+    if (!loading && sale) {
+      const totalProfit = overallProfit();
+      const totalCost = overallCost();
+      const monthlyProfit = monthProfit();
+      setState({
+        ...state,
+        monthlyProfit: monthlyProfit,
+        overallCost: totalCost,
+        overallProfit: totalProfit
+      });
+    }
   }, [sale]);
-
+  console.log(state);
   return (
     <Fragment>
       <div className={classes.root}>
@@ -72,11 +91,17 @@ const Papers = ({
           <Fragment>
             <Paper elevation={3}>
               {' '}
-              <div>Overall</div>
+              <div>Overall Profit</div>
+              <div>{state.overallProfit}</div>
             </Paper>
-            <Paper elevation={3} />
-            <Paper elevation={3} />
-            <Paper elevation={3} />
+            <Paper elevation={3}>
+              <div>Overall Cost</div>
+              <div>{state.overallCost}</div>
+            </Paper>
+            <Paper elevation={3}>
+              <div>Monthly Profit</div>
+              <div>{state.monthlyProfit}</div>
+            </Paper>
           </Fragment>
         )}
       </div>

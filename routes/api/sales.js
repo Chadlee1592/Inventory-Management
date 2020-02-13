@@ -14,14 +14,15 @@ router.post('/', auth, async (req, res) => {
     if (!req.body.edit) {
       const user = await User.findById(req.user.id).select('-password');
 
+      const margin = parseInt(req.body.revenue) - parseInt(req.body.cost);
+
       const newSale = new Sale({
         purchaseDate: req.body.purchaseDate,
         name: user.name,
         user: req.user.id,
         oppName: req.body.oppName,
         cost: req.body.cost,
-        price: req.body.price,
-        margin: req.body.margin,
+        margin: margin,
         marginPercent: req.body.marginPercent,
         status: req.body.status,
         soldDate: req.body.soldDate,
@@ -32,71 +33,67 @@ router.post('/', auth, async (req, res) => {
 
       res.json(sale);
     } else {
-      if (req.body.purchaseDate === 'Invalid date' && req.body.soldDate !== 'Invalid date') {
+      if (
+        req.body.purchaseDate === 'Invalid date' &&
+        req.body.soldDate !== 'Invalid date'
+      ) {
         const update = {
           purchaseDate: null,
           oppName: req.body.oppName,
           cost: req.body.cost,
-          margin: req.body.margin,
+          margin: margin,
           marginPercent: req.body.marginPercent,
           status: req.body.status,
           soldDate: req.body.soldDate,
           price: req.body.revenue
-        }
-        const sale = await Sale.findOneAndUpdate(
-          { _id: req.body.id },
-          update
-        )
-        res.json(sale)
-      } else if (req.body.soldDate === 'Invalid date' && req.body.purchaseDate !== 'Invalid date') {
+        };
+        const sale = await Sale.findOneAndUpdate({ _id: req.body.id }, update);
+        res.json(sale);
+      } else if (
+        req.body.soldDate === 'Invalid date' &&
+        req.body.purchaseDate !== 'Invalid date'
+      ) {
         const update = {
           purchaseDate: req.body.purchaseDate,
           oppName: req.body.oppName,
           cost: req.body.cost,
-          margin: req.body.margin,
+          margin: margin,
           marginPercent: req.body.marginPercent,
           status: req.body.status,
           soldDate: null,
           price: req.body.revenue
-        }
-        const sale = await Sale.findOneAndUpdate(
-          { _id: req.body.id },
-          update
-        )
-        res.json(sale)
-      } else if (req.body.purchaseDate === 'Invalid date' && req.body.soldDate === 'Invalid date') {
+        };
+        const sale = await Sale.findOneAndUpdate({ _id: req.body.id }, update);
+        res.json(sale);
+      } else if (
+        req.body.purchaseDate === 'Invalid date' &&
+        req.body.soldDate === 'Invalid date'
+      ) {
         const update = {
           purchaseDate: null,
           oppName: req.body.oppName,
           cost: req.body.cost,
-          margin: req.body.margin,
+          margin: margin,
           marginPercent: req.body.marginPercent,
           status: req.body.status,
           soldDate: null,
           price: req.body.revenue
-        }
-        const sale = await Sale.findOneAndUpdate(
-          { _id: req.body.id },
-          update
-        )
-        res.json(sale)
+        };
+        const sale = await Sale.findOneAndUpdate({ _id: req.body.id }, update);
+        res.json(sale);
       } else {
         const update = {
           purchaseDate: req.body.purchaseDate,
           oppName: req.body.oppName,
           cost: req.body.cost,
-          margin: req.body.margin,
+          margin: margin,
           marginPercent: req.body.marginPercent,
           status: req.body.status,
           soldDate: req.body.soldDate,
           price: req.body.revenue
-        }
-        const sale = await Sale.findOneAndUpdate(
-          { _id: req.body.id },
-          update
-        )
-        res.json(sale)
-
+        };
+        const sale = await Sale.findOneAndUpdate({ _id: req.body.id }, update);
+        res.json(sale);
       }
     }
   } catch (err) {

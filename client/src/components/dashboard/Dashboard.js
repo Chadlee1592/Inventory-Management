@@ -153,7 +153,6 @@ const Dashboard = ({
               setTimeout(() => {
                 resolve();
                 if (oldData) {
-                  console.log(newData);
                   if (
                     (newData.status == 1 && !newData.closed_date) ||
                     (newData.status == 1 && !newData.revenue) ||

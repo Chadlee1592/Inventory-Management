@@ -1,8 +1,12 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getCurrentSales } from '../../actions/sales';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,15 +20,50 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Papers = () => {
+const Papers = ({
+  getCurrentSales,
+  auth: { user },
+  sale: { sale, loading }
+}) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    checkedB: true
+    checkedB: false,
+    overallProfit: '',
+    overallCost: '',
+    monthlyProfit: '',
+    monthlyCost: ''
   });
 
   const handleChange = name => event => {
     setState({ ...state, [name]: event.target.checked });
   };
+
+  useEffect(() => {
+    const overallProfit = () => {
+      if (!loading && sale) {
+        for (let i = 0; i < sale.length; i++) {
+          if (!sale[i].status) {
+            let totalMargin = +sale[i].margin;
+            return totalMargin;
+          }
+        }
+      }
+    };
+    const overallCost = () => {
+      if (!loading && sale) {
+        for (let i = 0; i < sale.length; i++) {
+          let totalCost = +sale[i].cost;
+          return totalCost;
+        }
+      }
+    };
+    const totalMargin = overallProfit();
+    const totalCost = overallCost();
+    console.log(totalMargin);
+    console.log(totalCost);
+
+    const 
+  }, [sale]);
 
   return (
     <Fragment>
@@ -57,4 +96,17 @@ const Papers = () => {
   );
 };
 
-export default Papers;
+Papers.propTypes = {
+  getCurrentSales: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  sale: PropTypes.object.isRequired
+};
+
+const mapStateToProp = state => ({
+  auth: state.auth,
+  sale: state.sale
+});
+
+export default connect(mapStateToProp, {
+  getCurrentSales
+})(Papers);

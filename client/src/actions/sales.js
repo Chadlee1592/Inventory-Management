@@ -166,7 +166,7 @@ export const createSales = (
             cost: formData.cost,
             revenue: formData.revenue,
             soldDate: moment(formData.closed_date).format('MM DD YYYY'),
-            margin: parseInt(formData.revenue) - parseInt(formData.cost),
+            margin: parseFloat(formData.revenue) - parseFloat(formData.cost),
             status: true,
             edit: false
           };
@@ -188,7 +188,7 @@ export const createSales = (
             cost: formData.cost,
             revenue: formData.revenue,
             soldDate: moment(formData.closed_date).format('MM DD YYYY'),
-            margin: parseInt(formData.revenue) - parseInt(formData.cost),
+            margin: parseFloat(formData.revenue) - parseFloat(formData.cost),
             status: false,
             edit: false
           };
@@ -213,7 +213,7 @@ export const createSales = (
             cost: formData.cost,
             revenue: formData.revenue,
             soldDate: moment(formData.closed_date).format('MM DD YYYY'),
-            margin: parseInt(formData.revenue) - parseInt(formData.cost),
+            margin: parseFloat(formData.revenue) - parseFloat(formData.cost),
             status: true,
             edit: true
           };
@@ -236,7 +236,7 @@ export const createSales = (
             cost: formData.cost,
             revenue: formData.revenue,
             soldDate: moment(formData.closed_date).format('MM DD YYYY'),
-            margin: parseInt(formData.revenue) - parseInt(formData.cost),
+            margin: parseFloat(formData.revenue) - parseFloat(formData.cost),
             status: false,
             edit: true
           };
@@ -342,8 +342,6 @@ export const getCurrentSalesInfo = () => async dispatch => {
       totalProfit: overallProfit(),
       currentMonthProfit: monthlyProfit()
     }
-    console.log(payload)
-
     dispatch({
       type: GET_INFO,
       payload: payload

@@ -14,8 +14,8 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     '& > *': {
       margin: theme.spacing(1),
-      width: theme.spacing(16),
-      height: theme.spacing(16)
+      width: theme.spacing(23),
+      height: theme.spacing(23)
     }
   },
   rootTwo: {
@@ -24,6 +24,19 @@ const useStyles = makeStyles(theme => ({
       width: theme.spacing(1),
       height: theme.spacing(1)
     }
+  },
+  rootThree: {
+    flexGrow: 1
+  },
+  paper: {
+    textAlign: 'center',
+    padding: theme.spacing(2),
+  },
+  title: {
+    color: 'black'
+  },
+  number: {
+    fontSize: '2rem'
   }
 }));
 
@@ -60,23 +73,30 @@ const Papers = ({
     }
   }, [info])
 
+  const formatMoney = number => number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
   return (
     <Fragment>
       <div className={classes.root}>
         {state.checkedB && (
           <Fragment>
             <Paper elevation={3}>
-              {' '}
-              <div>Overall Profit</div>
-              <div>{data.overallProfit}</div>
+              <div className={classes.rootThree}>
+                <p className={[classes.paper, classes.title].join(' ')}>Total Profit</p>
+                <p className={[classes.paper, classes.number].join(' ')}>{formatMoney(data.overallProfit)}</p>
+              </div>
             </Paper>
             <Paper elevation={3}>
-              <div>Overall Cost</div>
-              <div>{data.overallCost}</div>
+              <div className={classes.rootThree}>
+                <p className={[classes.paper, classes.title].join(' ')}>Total Investment</p>
+                <p className={[classes.paper, classes.number].join(' ')}>{formatMoney(data.overallCost)}</p>
+              </div>
             </Paper>
             <Paper elevation={3}>
-              <div>Monthly Profit</div>
-              <div>{data.monthlyProfit}</div>
+              <div className={classes.rootThree}>
+                <p className={[classes.paper, classes.title].join(' ')}>Current Month Profit</p>
+                <p className={[classes.paper, classes.number].join(' ')}>{formatMoney(data.monthlyProfit)}</p>
+              </div>
             </Paper>
           </Fragment>
         )}

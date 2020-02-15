@@ -161,7 +161,7 @@ const Dashboard = ({
                       createSales(newData, history).then(() => getCurrentSalesInfo())
 
                       if (parseInt(newData.status) === 1) {
-                        newData.margin = parseInt(newData.revenue) - parseInt(newData.cost)
+                        newData.margin = parseFloat(newData.revenue) - parseFloat(newData.cost)
                         data.push(newData);
                         return { ...prevState, data };
                       } else {
@@ -199,7 +199,7 @@ const Dashboard = ({
                         setState(prevState => {
                           createSales(newData, history, true).then(() => getCurrentSalesInfo())
                           if (newData.status == 1) {
-                            newData.margin = parseInt(newData.revenue) - parseInt(newData.cost)
+                            newData.margin = parseFloat(newData.revenue) - parseFloat(newData.cost)
                             const data = [...prevState.data];
                             data[data.indexOf(oldData)] = newData;
                             return { ...prevState, data };

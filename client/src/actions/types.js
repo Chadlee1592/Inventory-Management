@@ -12,3 +12,4 @@ export const CLEAR_SALES = 'CLEAR_SALES';
 export const SALES_ERROR = 'SALES_ERROR';
 export const UPDATE_SALES = 'UPDATE_SALES';
 export const GET_INFO = 'GET_INFO'
+export const CLEAR_INFO = 'CLEAR_INFO'

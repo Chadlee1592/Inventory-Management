@@ -17,6 +17,13 @@ const useStyles = makeStyles(theme => ({
       width: theme.spacing(16),
       height: theme.spacing(16)
     }
+  },
+  rootTwo: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: theme.spacing(1),
+      height: theme.spacing(1)
+    }
   }
 }));
 
@@ -74,6 +81,7 @@ const Papers = ({
           </Fragment>
         )}
       </div>
+
       <FormControlLabel
         control={
           <Switch
@@ -93,7 +101,7 @@ const Papers = ({
 Papers.propTypes = {
   getCurrentSalesInfo: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  sale: PropTypes.object.isRequired
+  sale: PropTypes.object.isRequired,
 };
 
 const mapStateToProp = state => ({
@@ -102,5 +110,5 @@ const mapStateToProp = state => ({
 });
 
 export default connect(mapStateToProp, {
-  getCurrentSalesInfo
+  getCurrentSalesInfo,
 })(Papers);

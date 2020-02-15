@@ -16,12 +16,13 @@ import MaterialTable from 'material-table';
 
 const Dashboard = ({
   getCurrentSales,
+  getCurrentSalesInfo,
   createSales,
   deleteSale,
   updateSale,
   history,
   auth: { user },
-  sale: { sale, loading }
+  sale: { sale, loading, info }
 }) => {
   const [state, setState] = useState({
     columns: [
@@ -50,6 +51,12 @@ const Dashboard = ({
         filtering: false,
         type: 'date'
       },
+      {
+        title: 'Margin',
+        field: 'margin',
+        filtering: false,
+        type: 'currency'
+      },
       { title: 'id', field: 'id', hidden: true }
     ],
     data: []
@@ -73,7 +80,8 @@ const Dashboard = ({
               status: 0,
               revenue: sale[i].price,
               purchase_date: sale[i].purchaseDate,
-              closed_date: sale[i].soldDate
+              closed_date: sale[i].soldDate,
+              margin: 0
             };
             data.push(newData);
           } else {
@@ -85,7 +93,8 @@ const Dashboard = ({
               status: 1,
               revenue: sale[i].price,
               purchase_date: sale[i].purchaseDate,
-              closed_date: sale[i].soldDate
+              closed_date: sale[i].soldDate,
+              margin: sale[i].margin
             };
             data.push(newData);
           }
@@ -115,7 +124,14 @@ const Dashboard = ({
                 setTimeout(() => {
                   resolve();
                   setState(prevState => {
-                    if (
+                    if (newData.margin) {
+                      updateSale(
+                        'Please exclude margin. Margin is automatically calculated',
+                        'danger'
+                      );
+                      const data = [...prevState.data];
+                      return { ...prevState, data };
+                    } else if (
                       (parseInt(newData.status) === 1 &&
                         !newData.purchase_date) ||
                       (parseInt(newData.status) === 1 && !newData.revenue) ||
@@ -124,7 +140,7 @@ const Dashboard = ({
                       (parseInt(newData.status) === 1 && !newData.name)
                     ) {
                       updateSale(
-                        'Please fill all fields when status is closed',
+                        'Please fill all except margin fields when status is closed',
                         'danger'
                       );
                       const data = [...prevState.data];
@@ -142,9 +158,17 @@ const Dashboard = ({
                       return { ...prevState, data };
                     } else {
                       const data = [...prevState.data];
-                      createSales(newData, history);
-                      data.push(newData);
-                      return { ...prevState, data };
+                      createSales(newData, history).then(() => getCurrentSalesInfo())
+
+                      if (parseInt(newData.status) === 1) {
+                        newData.margin = parseInt(newData.revenue) - parseInt(newData.cost)
+                        data.push(newData);
+                        return { ...prevState, data };
+                      } else {
+                        newData.margin = 0
+                        data.push(newData);
+                        return { ...prevState, data };
+                      }
                     }
                   });
                 }, 600);
@@ -153,35 +177,51 @@ const Dashboard = ({
               new Promise(resolve => {
                 setTimeout(() => {
                   resolve();
-                  if (oldData) {
-                    if (
-                      (newData.status == 1 && !newData.closed_date) ||
-                      (newData.status == 1 && !newData.revenue) ||
-                      (newData.status == 1 && !newData.cost) ||
-                      (newData.status == 1 && !newData.purchase_date) ||
-                      (newData.status == 1 && !newData.name)
-                    ) {
-                      updateSale(
-                        'Please fill all fields when status is closed',
-                        'danger'
-                      );
-                    } else {
-                      setState(prevState => {
-                        createSales(newData, history, true);
-                        const data = [...prevState.data];
-                        data[data.indexOf(oldData)] = newData;
-                        return { ...prevState, data };
-                      });
+                  if (oldData.margin !== newData.margin) {
+                    updateSale(
+                      'Please do not update the margin. Margin is automatically calculated',
+                      'danger'
+                    )
+                  } else {
+                    if (oldData) {
+                      if (
+                        (newData.status == 1 && !newData.closed_date) ||
+                        (newData.status == 1 && !newData.revenue) ||
+                        (newData.status == 1 && !newData.cost) ||
+                        (newData.status == 1 && !newData.purchase_date) ||
+                        (newData.status == 1 && !newData.name)
+                      ) {
+                        updateSale(
+                          'Please fill all fields except margin when status is closed',
+                          'danger'
+                        );
+                      } else {
+                        setState(prevState => {
+                          createSales(newData, history, true).then(() => getCurrentSalesInfo())
+                          if (newData.status == 1) {
+                            newData.margin = parseInt(newData.revenue) - parseInt(newData.cost)
+                            const data = [...prevState.data];
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          } else {
+                            newData.margin = 0
+                            const data = [...prevState.data];
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          }
+                        });
+                      }
                     }
                   }
                 }, 600);
+
               }),
             onRowDelete: oldData =>
               new Promise(resolve => {
                 setTimeout(() => {
                   resolve();
                   setState(prevState => {
-                    deleteSale(oldData.id);
+                    deleteSale(oldData.id).then(() => getCurrentSalesInfo())
                     const data = [...prevState.data];
                     data.splice(data.indexOf(oldData), 1);
                     return { ...prevState, data };
@@ -207,7 +247,7 @@ Dashboard.propTypes = {
   createSales: PropTypes.func.isRequired,
   deleteSale: PropTypes.func.isRequired,
   updateSale: PropTypes.func.isRequired,
-  getCurrentSalesInfo: PropTypes.func.isRequired,
+  getCurrentSalesInfo: PropTypes.func.isRequired
 };
 
 const mapStateToProp = state => ({
@@ -220,5 +260,5 @@ export default connect(mapStateToProp, {
   createSales,
   deleteSale,
   updateSale,
-  getCurrentSalesInfo
+  getCurrentSalesInfo,
 })(withRouter(Dashboard));

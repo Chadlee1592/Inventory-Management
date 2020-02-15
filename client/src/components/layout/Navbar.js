@@ -36,7 +36,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
   return (
     <nav className='navbar bg-dark'>
       <h1>
-        <Link to='/'>
+        <Link>
           <i className='fas fa-boxes'></i> Inventory-Management
         </Link>
       </h1>

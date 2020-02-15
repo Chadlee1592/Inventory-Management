@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://chad123:chad123@inventory-management-keevm.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "mysecrettoken"
+}

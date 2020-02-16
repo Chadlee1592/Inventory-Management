@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     textAlign: 'center',
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   title: {
     color: 'black'
@@ -47,13 +47,14 @@ const Papers = ({
 }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    checkedB: false,
+    checkedB: false
   });
   const [data, setData] = React.useState({
     overallProfit: '',
     overallCost: '',
-    monthlyProfit: ''
-  })
+    monthlyProfit: '',
+    overallRevenue: ''
+  });
 
   const handleChange = name => event => {
     setState({ ...state, [name]: event.target.checked });
@@ -68,12 +69,14 @@ const Papers = ({
       setData({
         overallProfit: info.totalProfit,
         overallCost: info.totalInventoryCost,
-        monthlyProfit: info.currentMonthProfit
-      })
+        monthlyProfit: info.currentMonthProfit,
+        overallRevenue: info.totalRevenue
+      });
     }
-  }, [info])
+  }, [info]);
 
-  const formatMoney = number => number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  const formatMoney = number =>
+    number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
   return (
     <Fragment>
@@ -82,20 +85,42 @@ const Papers = ({
           <Fragment>
             <Paper elevation={3}>
               <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>Total Profit</p>
-                <p className={[classes.paper, classes.number].join(' ')}>{formatMoney(data.overallProfit)}</p>
+                <p className={[classes.paper, classes.title].join(' ')}>
+                  Total Profit
+                </p>
+                <p className={[classes.paper, classes.number].join(' ')}>
+                  {formatMoney(data.overallProfit)}
+                </p>
               </div>
             </Paper>
             <Paper elevation={3}>
               <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>Total Investment</p>
-                <p className={[classes.paper, classes.number].join(' ')}>{formatMoney(data.overallCost)}</p>
+                <p className={[classes.paper, classes.title].join(' ')}>
+                  Total Investment
+                </p>
+                <p className={[classes.paper, classes.number].join(' ')}>
+                  {formatMoney(data.overallCost)}
+                </p>
               </div>
             </Paper>
             <Paper elevation={3}>
               <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>Current Month Profit</p>
-                <p className={[classes.paper, classes.number].join(' ')}>{formatMoney(data.monthlyProfit)}</p>
+                <p className={[classes.paper, classes.title].join(' ')}>
+                  Total Revenue
+                </p>
+                <p className={[classes.paper, classes.number].join(' ')}>
+                  {formatMoney(data.overallRevenue)}
+                </p>
+              </div>
+            </Paper>
+            <Paper elevation={3}>
+              <div className={classes.rootThree}>
+                <p className={[classes.paper, classes.title].join(' ')}>
+                  Current Month Profit
+                </p>
+                <p className={[classes.paper, classes.number].join(' ')}>
+                  {formatMoney(data.monthlyProfit)}
+                </p>
               </div>
             </Paper>
           </Fragment>
@@ -121,7 +146,7 @@ const Papers = ({
 Papers.propTypes = {
   getCurrentSalesInfo: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  sale: PropTypes.object.isRequired,
+  sale: PropTypes.object.isRequired
 };
 
 const mapStateToProp = state => ({
@@ -130,5 +155,5 @@ const mapStateToProp = state => ({
 });
 
 export default connect(mapStateToProp, {
-  getCurrentSalesInfo,
+  getCurrentSalesInfo
 })(Papers);

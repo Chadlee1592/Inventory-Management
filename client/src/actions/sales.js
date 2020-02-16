@@ -350,6 +350,16 @@ export const getCurrentSalesInfo = () => async dispatch => {
       return totalCost;
     };
 
+    const overallRevenue = () => {
+      let totalRevenue = 0;
+      for (let i = 0; i < res.data.length; i++) {
+        if (!res.data[i].status) {
+          totalRevenue += res.data[i].price;
+        }
+      }
+      return totalRevenue;
+    };
+
     const monthlyProfit = () => {
       let monthMargin = 0;
       const today = new Date();
@@ -366,7 +376,8 @@ export const getCurrentSalesInfo = () => async dispatch => {
     const payload = {
       totalInventoryCost: overallCost(),
       totalProfit: overallProfit(),
-      currentMonthProfit: monthlyProfit()
+      currentMonthProfit: monthlyProfit(),
+      totalRevenue: overallRevenue()
     };
     dispatch({
       type: GET_INFO,

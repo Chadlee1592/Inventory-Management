@@ -15,6 +15,12 @@ router.post('/', auth, async (req, res) => {
 
     if (!req.body.edit) {
       const user = await User.findById(req.user.id).select('-password');
+      console.log(
+        'purchase date',
+        req.body.purchaseDate,
+        'soldDate',
+        req.body.soldDate
+      );
 
       const newSale = new Sale({
         purchaseDate: req.body.purchaseDate,

@@ -328,3 +328,9 @@ a:hover {
     margin-bottom: 0.2rem;
   }
 }
+
+@media (max-width: 414px) {
+  /* .test {
+    background-color: red;
+  } */
+}

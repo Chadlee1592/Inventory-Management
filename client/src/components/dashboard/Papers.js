@@ -86,16 +86,6 @@ const Papers = ({
             <Paper elevation={3}>
               <div className={classes.rootThree}>
                 <p className={[classes.paper, classes.title].join(' ')}>
-                  Total Profit
-                </p>
-                <p className={[classes.paper, classes.number].join(' ')}>
-                  {formatMoney(data.overallProfit)}
-                </p>
-              </div>
-            </Paper>
-            <Paper elevation={3}>
-              <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>
                   Total Investment
                 </p>
                 <p className={[classes.paper, classes.number].join(' ')}>
@@ -110,6 +100,16 @@ const Papers = ({
                 </p>
                 <p className={[classes.paper, classes.number].join(' ')}>
                   {formatMoney(data.overallRevenue)}
+                </p>
+              </div>
+            </Paper>
+            <Paper elevation={3}>
+              <div className={classes.rootThree}>
+                <p className={[classes.paper, classes.title].join(' ')}>
+                  Total Profit
+                </p>
+                <p className={[classes.paper, classes.number].join(' ')}>
+                  {formatMoney(data.overallProfit)}
                 </p>
               </div>
             </Paper>

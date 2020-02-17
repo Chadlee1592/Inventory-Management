@@ -330,7 +330,7 @@ a:hover {
 }
 
 @media (max-width: 414px) {
-  /* .test {
+  .overview {
     background-color: red;
-  } */
+  }
 }

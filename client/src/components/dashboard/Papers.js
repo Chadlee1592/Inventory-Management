@@ -3,11 +3,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import { useMediaQuery } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentSalesInfo } from '../../actions/sales';
 
+// width and height 23 and 16 for phone
+// fontSize 2 rem and 1 rem for phone
+// paper padding 2 and 1 for phone
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -37,6 +41,22 @@ const useStyles = makeStyles(theme => ({
   },
   number: {
     fontSize: '2rem'
+  },
+  isActiveRoot: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(16)
+    }
+  },
+  isActivePaper: {
+    textAlign: 'center',
+    padding: theme.spacing(1)
+  },
+  isActiveNumber: {
+    fontSize: '1rem'
   }
 }));
 
@@ -60,6 +80,8 @@ const Papers = ({
     setState({ ...state, [name]: event.target.checked });
   };
 
+  const isActive = useMediaQuery('(max-width: 414px');
+
   useEffect(() => {
     getCurrentSalesInfo();
   }, []);
@@ -80,65 +102,167 @@ const Papers = ({
 
   return (
     <Fragment>
-      <div className={classes.root}>
-        {state.checkedB && (
-          <Fragment>
-            <Paper elevation={3}>
-              <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>
-                  Total Investment
-                </p>
-                <p className={[classes.paper, classes.number].join(' ')}>
-                  {formatMoney(data.overallCost)}
-                </p>
-              </div>
-            </Paper>
-            <Paper elevation={3}>
-              <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>
-                  Total Revenue
-                </p>
-                <p className={[classes.paper, classes.number].join(' ')}>
-                  {formatMoney(data.overallRevenue)}
-                </p>
-              </div>
-            </Paper>
-            <Paper elevation={3}>
-              <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>
-                  Total Profit
-                </p>
-                <p className={[classes.paper, classes.number].join(' ')}>
-                  {formatMoney(data.overallProfit)}
-                </p>
-              </div>
-            </Paper>
-            <Paper elevation={3}>
-              <div className={classes.rootThree}>
-                <p className={[classes.paper, classes.title].join(' ')}>
-                  Current Month Profit
-                </p>
-                <p className={[classes.paper, classes.number].join(' ')}>
-                  {formatMoney(data.monthlyProfit)}
-                </p>
-              </div>
-            </Paper>
-          </Fragment>
-        )}
-      </div>
+      {!isActive ? (
+        <Fragment>
+          <div className={classes.root}>
+            {state.checkedB && (
+              <Fragment>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p className={[classes.paper, classes.title].join(' ')}>
+                      Total Investment
+                    </p>
+                    <p className={[classes.paper, classes.number].join(' ')}>
+                      {formatMoney(data.overallCost)}
+                    </p>
+                  </div>
+                </Paper>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p className={[classes.paper, classes.title].join(' ')}>
+                      Total Revenue
+                    </p>
+                    <p className={[classes.paper, classes.number].join(' ')}>
+                      {formatMoney(data.overallRevenue)}
+                    </p>
+                  </div>
+                </Paper>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p className={[classes.paper, classes.title].join(' ')}>
+                      Total Profit
+                    </p>
+                    <p className={[classes.paper, classes.number].join(' ')}>
+                      {formatMoney(data.overallProfit)}
+                    </p>
+                  </div>
+                </Paper>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p className={[classes.paper, classes.title].join(' ')}>
+                      Current Month Profit
+                    </p>
+                    <p className={[classes.paper, classes.number].join(' ')}>
+                      {formatMoney(data.monthlyProfit)}
+                    </p>
+                  </div>
+                </Paper>
+              </Fragment>
+            )}
+          </div>
 
-      <FormControlLabel
-        control={
-          <Switch
-            className={classes.display}
-            checked={state.checkedB}
-            onChange={handleChange('checkedB')}
-            value='checkedB'
-            color='primary'
+          <FormControlLabel
+            control={
+              <Switch
+                className={classes.display}
+                checked={state.checkedB}
+                onChange={handleChange('checkedB')}
+                value='checkedB'
+                color='primary'
+              />
+            }
+            label='Show / Hide'
           />
-        }
-        label='Show / Hide'
-      />
+        </Fragment>
+      ) : (
+        <Fragment>
+          <div className={classes.isActiveRoot}>
+            {state.checkedB && (
+              <Fragment>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p
+                      className={[classes.isActivePaper, classes.title].join(
+                        ' '
+                      )}
+                    >
+                      Total Investment
+                    </p>
+                    <p
+                      className={[
+                        classes.isActivePaper,
+                        classes.isActiveNumber
+                      ].join(' ')}
+                    >
+                      {formatMoney(data.overallCost)}
+                    </p>
+                  </div>
+                </Paper>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p
+                      className={[classes.isActivePaper, classes.title].join(
+                        ' '
+                      )}
+                    >
+                      Total Revenue
+                    </p>
+                    <p
+                      className={[
+                        classes.isActivePaper,
+                        classes.isActiveNumber
+                      ].join(' ')}
+                    >
+                      {formatMoney(data.overallRevenue)}
+                    </p>
+                  </div>
+                </Paper>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p
+                      className={[classes.isActivePaper, classes.title].join(
+                        ' '
+                      )}
+                    >
+                      Total Profit
+                    </p>
+                    <p
+                      className={[
+                        classes.isActivePaper,
+                        classes.isActiveNumber
+                      ].join(' ')}
+                    >
+                      {formatMoney(data.overallProfit)}
+                    </p>
+                  </div>
+                </Paper>
+                <Paper elevation={3}>
+                  <div className={classes.rootThree}>
+                    <p
+                      className={[classes.isActivePaper, classes.title].join(
+                        ' '
+                      )}
+                    >
+                      Current Month Profit
+                    </p>
+                    <p
+                      className={[
+                        classes.isActivePaper,
+                        classes.isActiveNumber
+                      ].join(' ')}
+                    >
+                      {formatMoney(data.monthlyProfit)}
+                    </p>
+                  </div>
+                </Paper>
+              </Fragment>
+            )}
+          </div>
+
+          <FormControlLabel
+            control={
+              <Switch
+                className={classes.display}
+                checked={state.checkedB}
+                onChange={handleChange('checkedB')}
+                value='checkedB'
+                color='primary'
+              />
+            }
+            label='Show / Hide'
+          />
+        </Fragment>
+      )}
     </Fragment>
   );
 };

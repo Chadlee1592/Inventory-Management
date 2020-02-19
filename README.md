@@ -1,6 +1,6 @@
 # Inventory-Management
 
-Inventory-Management is a web-based, mobile-friendly application to keep track of your reslling inventory powered by React.
+Inventory-Management is a web-based, mobile-friendly application to keep track of your reselling inventory powered by React.
 
 # Motivation
 

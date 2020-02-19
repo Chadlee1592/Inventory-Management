@@ -11,7 +11,7 @@ My friends recently got into reselling concert tickets. To help keep track of in
 <img src="images/home.png" width="600">
 <img src="images/signin.png" width="400">
 <img src="images/dashboard1.png" width="400">
-<img src="images/inventory.jpg" width="400">
+![inventory](https://github.com/Chadlee1592/Inventory-Management/blob/master/images/inventory.JPG)
 
 # Tech/Framworks used
 

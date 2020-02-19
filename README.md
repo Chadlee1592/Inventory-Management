@@ -8,7 +8,7 @@ My friends recently got into reselling concert tickets. To help keep track of in
 
 # Screenshots
 
-<img src="images/home.png">
+<img src="images/home.png" width="600">
 <img src="images/signin.png" width="400">
 <img src="images/dashboard1.png" width="400">
 <img src="images/dashboard2.png" width="400">

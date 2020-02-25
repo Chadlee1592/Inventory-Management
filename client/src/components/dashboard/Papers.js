@@ -80,7 +80,7 @@ const Papers = ({
     setState({ ...state, [name]: event.target.checked });
   };
 
-  const isActive = useMediaQuery('(max-width: 450px');
+  const isActive = useMediaQuery('(max-width: 450px)');
 
   useEffect(() => {
     getCurrentSalesInfo();

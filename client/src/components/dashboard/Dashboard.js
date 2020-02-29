@@ -238,6 +238,33 @@ const Dashboard = ({
           options={{
             filtering: true,
             exportButton: true,
+            exportCsv: (columns, data) => {
+              data.map(e => delete e.id)
+              data.map(e => delete e.tableData)
+
+              let csv
+
+              //Loop the array of objects 
+              for (let i = 0; i < data.length; i++) {
+                let keysAmount = Object.keys(data[i]).length
+                let keysCounter = 0;
+
+
+                for (let key in data[i]) {
+                  csv += data[i][key] + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
+                  keysCounter++
+                }
+
+                keysCounter = 0
+              }
+              // Once we are done looping, download the .csv by creating a link
+              let link = document.createElement('a')
+              link.id = 'download-csv'
+              link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
+              link.setAttribute('download', 'yourfiletextgoeshere.csv');
+              document.body.appendChild(link)
+              document.querySelector('#download-csv').click()
+            },
             cellStyle: { textAlign: 'left' },
             pageSize: 10
           }}
